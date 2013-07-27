@@ -19,7 +19,7 @@ RANKS = {
 class Card
   attr_reader :suit, :rank
 
-  def initialize(suit, rank)
+  def initialize(rank, suit)
     @suit = suit
     @rank = rank
   end
@@ -40,7 +40,7 @@ class Deck
     @deck = []
     RANKS.keys.each do |rank|
       SUITS.each do |suit|
-        @deck << Card.new(suit, rank)
+        @deck << Card.new(rank, suit)
       end
     end
     @deck = @deck.shuffle
@@ -77,19 +77,23 @@ class Hand
   end
 
   def get_ranks_hash
-    card_values = Hash.new(0)
-    rank_array = []
-    @hand.each do |card|
-      rank_array << RANKS[card.rank]
-    end
-    rank_array
-    rank_array.each do |rank|
-      card_values[rank] += 1
-    end
-    card_values
+    card_ranks = Hash.new(0)
+    rank_array = get_rank_array
+    rank_array.each { |rank| card_ranks[rank] += 1 }
+    card_ranks
   end
 
+  def get_rank_array
+    rank_array = []
+    @hand.each { |card| rank_array << RANKS[card.rank] }
+    rank_array
+  end
 
+  def get_suit_array
+    suit_array = []
+    @hand.each { |card| suit_array << card.suit }
+    suit_array
+  end
 
   def pair?
     rank_hash = get_ranks_hash
@@ -109,6 +113,7 @@ class Hand
   def straight?
     rank_hash = get_ranks_hash
     sorted_values = rank_hash.keys.sort
+    return true if sorted_values = [2, 3, 4, 5, 13]
     sorted_values.each_with_index do |value, i|
       next if i == 4
       return false unless ((value + 1) == sorted_values[i + 1])
@@ -116,16 +121,22 @@ class Hand
     true
   end
 
-  def
+  def flush?
+    suit_array = get_suit_array
+    suit_array.uniq.length == 1
+  end
+
+  def full_house?
+    pair? && three_of_kind?
+  end
 
   def four_of_kind?
     rank_hash = get_ranks_hash
     rank_hash.values.include?(4)
   end
 
-  def full_house?
-
-
+  def straight_flush?
+    flush? && straight?
   end
 
 
