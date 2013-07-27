@@ -27,6 +27,11 @@ describe "#Hand" do
                      Card.new("3", "S"), Card.new("5", "H")])
     hand.two_pair?.should == true
   end
+  it "distinguishes between two pair and three of a kind" do
+    hand = Hand.new([Card.new("A", "H"), Card.new("A", "S"), Card.new("A", "C"),
+                     Card.new("3", "S"), Card.new("5", "H")])
+    hand.two_pair?.should == false
+  end
   it "finds three of a kind" do
     hand = Hand.new([Card.new("A", "H"), Card.new("A", "S"), Card.new("A", "C"),
                      Card.new("4", "H"), Card.new("5", "H")])

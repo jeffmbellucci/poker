@@ -84,15 +84,11 @@ class Hand
   end
 
   def get_rank_array
-    rank_array = []
-    @hand.each { |card| rank_array << RANKS[card.rank] }
-    rank_array
+    @hand.map { |card| RANKS[card.rank] }
   end
 
   def get_suit_array
-    suit_array = []
-    @hand.each { |card| suit_array << card.suit }
-    suit_array
+    @hand.map { |card| card.suit }
   end
 
   def pair?
@@ -102,7 +98,8 @@ class Hand
 
   def two_pair?
     rank_hash = get_ranks_hash
-    rank_hash.keys.uniq.length == 3
+    two_pair_array = rank_hash.values.select { |num_of_val| num_of_val == 2 }
+    two_pair_array.length == 2
   end
 
   def three_of_kind?
